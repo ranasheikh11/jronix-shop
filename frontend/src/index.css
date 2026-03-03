@@ -24,6 +24,34 @@ a.active hr {
 
 @media (max-width:640px) {
     a.active {
-        @apply text-white bg-black;
+        @apply text-white bg-pink-dark;
     }
+}
+
+.glass-nav {
+    @apply bg-white bg-opacity-70 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100;
+}
+
+.bg-pink-theme {
+    background-color: #FFF1F2;
+}
+
+.text-pink-theme {
+    color: #9D174D;
+}
+
+.premium-btn {
+    @apply px-8 py-3 bg-[#9D174D] text-white rounded-full hover:bg-pink-900 transition-all duration-300 shadow-md hover:shadow-pink-200;
+}
+
+button {
+    @apply transition-all duration-300;
+}
+
+button:hover {
+    @apply scale-105;
+}
+
+.active {
+    @apply text-pink-dark font-bold;
 }
