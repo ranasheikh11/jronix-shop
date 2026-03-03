@@ -1,17 +1,25 @@
 import { createContext, useEffect, useState } from "react";
-import { products } from "../assets/assets";
+import { products as staticProducts } from "../assets/assets";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import axios from "axios";
 
 export const ShopContext = createContext();
 
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const ShopContextProvider = (props) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const [products, setProducts] = useState(staticProducts);
+  const [token, setToken] = useState("");
+  const [userData, setUserData] = useState(false);
   const navigate = useNavigate();
 
-  const currency = "$";
+  const currency = t('currency');
   const delivery_fee = 10;
 
   useEffect(() => {
@@ -26,6 +34,47 @@ const ShopContextProvider = (props) => {
     // INFO: Save cart items to localStorage whenever cartItems changes
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
+
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
+    if (token) {
+      fetchUserProfile();
+    }
+    getProductsData();
+  }, [token]);
+
+  const getProductsData = async () => {
+    try {
+      const response = await axios.get(backendUrl + "/api/product/list");
+      if (response.data.success) {
+        // INFO: Only update products state if the backend actually has products
+        if (response.data.products.length > 0) {
+          setProducts(response.data.products);
+        } else {
+          setProducts(staticProducts);
+        }
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get(backendUrl + "/api/user/profile", { headers: { token } });
+      if (response.data.success) {
+        setUserData(response.data.userData);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -89,7 +138,7 @@ const ShopContextProvider = (props) => {
           if (cartItems[items][item] > 0) {
             totalAmount += itemInfo.price * cartItems[items][item];
           }
-        } catch (error) {}
+        } catch (error) { }
       }
     }
     return totalAmount;
@@ -109,6 +158,12 @@ const ShopContextProvider = (props) => {
     updateQuantity,
     getCartAmount,
     navigate,
+    backendUrl,
+    token,
+    setToken,
+    userData,
+    setUserData,
+    fetchUserProfile,
   };
 
   return (

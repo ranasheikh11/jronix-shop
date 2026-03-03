@@ -4,14 +4,14 @@ import { Link } from "react-router-dom";
 
 const Navbar = ({ setToken }) => {
   return (
-    <div className="top-0 left-0 z-50 w-full transition-all duration-300 bg-gray-600 bg-opacity-50 shadow-lg backdrop-blur-md">
-      <div className="flex items-center py-2 px-[4%] justify-between">
+    <div className="top-0 left-0 z-50 w-full transition-all duration-300 bg-white border-b border-pink-100 shadow-sm">
+      <div className="flex items-center py-4 px-[4%] justify-between">
         <Link to={"/"}>
-          <img className="w-44" src={assets.logo} alt="Trendify" />
+          <span className='text-2xl font-bold tracking-widest text-pink-dark'>JERONIX SHOP</span>
         </Link>
         <button
           onClick={() => setToken("")}
-          className="px-5 py-2 text-xs text-white bg-gray-800 rounded-full sm:px-7 sm:text-sm"
+          className="px-8 py-2 text-sm text-white bg-pink-dark rounded-full hover:bg-pink-900 transition-all shadow-sm"
         >
           Logout
         </button>
